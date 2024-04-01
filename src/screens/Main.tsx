@@ -57,98 +57,96 @@ const Main = () => {
   }
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <Center px={'$9'} h={'$full'}>
-          <VStack gap={'$6'} w={'$full'} py={'$6'}>
-            <Heading>Position Size Calculator</Heading>
-            {!posSize && (
+    <ScrollView bg="white">
+      <Center px={'$9'} pt={'$12'}>
+        <VStack gap={'$6'} w={'$full'} py={'$6'}>
+          <Heading>Position Size Calculator</Heading>
+          {!posSize && (
+            <>
+              <HStack gap={'$3'}>
+                <UIInput
+                  title="Entry price"
+                  onChangeText={setEntry}
+                  value={entry}
+                />
+                <UIInput
+                  title="Stop loss"
+                  onChangeText={setStop}
+                  value={stop}
+                />
+              </HStack>
+              <UIInput
+                title="Risk/reward"
+                onChangeText={setRatio}
+                value={ratio}
+                showInfo
+                infoData="RR Ratio"
+              />
+              <UIInput
+                title="Risk (USD)"
+                onChangeText={setRisk}
+                value={risk}
+                showInfo
+                infoData="Risk in USD"
+              />
+              <UIInput
+                title="Commissions %"
+                onChangeText={setCommission}
+                value={commission}
+                showInfo
+                infoData="Commission %"
+              />
+            </>
+          )}
+          <Button
+            onPress={posSize ? resetDataHandler : calcDataHandler}
+            $active-opacity={0.9}
+            borderRadius={'$lg'}
+            bg="$info700"
+            size="lg"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}>
+            <ButtonText>{posSize ? 'Reset' : 'Calculate'}</ButtonText>
+          </Button>
+          <Divider />
+          <VStack gap={'$3'} w={'$full'}>
+            {posSize && (
               <>
-                <HStack gap={'$3'}>
-                  <UIInput
-                    title="Entry price"
-                    onChangeText={setEntry}
-                    value={entry}
-                  />
-                  <UIInput
-                    title="Stop loss"
-                    onChangeText={setStop}
-                    value={stop}
-                  />
-                </HStack>
-                <UIInput
-                  title="Risk/reward"
-                  onChangeText={setRatio}
-                  value={ratio}
-                  showInfo
-                  infoData="RR Ratio"
+                <InfoItem
+                  title="Position size:"
+                  value={posSize}
+                  color="$trueGray600"
                 />
-                <UIInput
-                  title="Risk (USD)"
-                  onChangeText={setRisk}
-                  value={risk}
-                  showInfo
-                  infoData="Risk in USD"
+                <InfoItem title="Entry:" value={entry} color="$trueGray600" />
+                <InfoItem
+                  title="T/P:"
+                  value={profitLevel}
+                  color="$trueGray600"
                 />
-                <UIInput
-                  title="Commissions %"
-                  onChangeText={setCommission}
-                  value={commission}
-                  showInfo
-                  infoData="Commission %"
+                <InfoItem title="S/L:" value={stop} color="$trueGray600" />
+                <InfoItem
+                  title="Entry commission:"
+                  value={`-$${entryCommission}`}
+                  color="$red400"
+                />
+                <InfoItem
+                  title="Exit commission:"
+                  value={`-$${exitCommission}`}
+                  color="$red400"
+                />
+                <InfoItem
+                  title="Expected P&L:"
+                  value={`+$${pL}`}
+                  color="$success300"
                 />
               </>
             )}
-            <Button
-              onPress={posSize ? resetDataHandler : calcDataHandler}
-              $active-opacity={0.9}
-              borderRadius={'$lg'}
-              bg="$info700"
-              size="lg"
-              variant="solid"
-              action="primary"
-              isDisabled={false}
-              isFocusVisible={false}>
-              <ButtonText>{posSize ? 'Reset' : 'Calculate'}</ButtonText>
-            </Button>
-            <Divider />
-            <VStack gap={'$3'} w={'$full'}>
-              {posSize && (
-                <>
-                  <InfoItem
-                    title="Position size:"
-                    value={posSize}
-                    color="$trueGray600"
-                  />
-                  <InfoItem title="Entry:" value={entry} color="$trueGray600" />
-                  <InfoItem
-                    title="T/P:"
-                    value={profitLevel}
-                    color="$trueGray600"
-                  />
-                  <InfoItem title="S/L:" value={stop} color="$trueGray600" />
-                  <InfoItem
-                    title="Entry commission:"
-                    value={`-$${entryCommission}`}
-                    color="$red400"
-                  />
-                  <InfoItem
-                    title="Exit commission:"
-                    value={`-$${exitCommission}`}
-                    color="$red400"
-                  />
-                  <InfoItem
-                    title="Expected P&L:"
-                    value={`+$${pL}`}
-                    color="$success300"
-                  />
-                </>
-              )}
-            </VStack>
           </VStack>
-        </Center>
-      </ScrollView>
-    </SafeAreaView>
+        </VStack>
+      </Center>
+    </ScrollView>
   );
 };
 
