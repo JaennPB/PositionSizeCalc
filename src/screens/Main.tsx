@@ -40,7 +40,7 @@ const Main = () => {
     setEntryCommission(String(entryCommission.toFixed(2)));
     setExitCommission(String(exitCommission.toFixed(2)));
     setPL(String(expectedPL.toFixed(2)));
-    setProfitLevel(String(profitLevel.toFixed(2)));
+    setProfitLevel(String(profitLevel.toFixed(0)));
   }
 
   function resetDataHandler() {
@@ -61,7 +61,7 @@ const Main = () => {
       <ScrollView>
         <Center px={'$9'} h={'$full'}>
           <VStack gap={'$6'} w={'$full'} py={'$6'}>
-            <Heading>Position Calculator</Heading>
+            <Heading>Position Size Calculator</Heading>
             {!posSize && (
               <>
                 <HStack gap={'$3'}>
