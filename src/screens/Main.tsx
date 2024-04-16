@@ -6,7 +6,6 @@ import {
   Divider,
   HStack,
   Heading,
-  SafeAreaView,
   ScrollView,
   VStack,
 } from '@gluestack-ui/themed';
@@ -16,7 +15,7 @@ import InfoItem from '../components/InfoItem';
 const Main = () => {
   const [entry, setEntry] = useState<string>('');
   const [stop, setStop] = useState<string>('');
-  const [ratio, setRatio] = useState<string>('');
+  const [ratio, setRatio] = useState<string>('2');
   const [risk, setRisk] = useState<string>('10');
   const [commission, setCommission] = useState<string>('0.0550');
   const [profitLevel, setProfitLevel] = useState<string>('');
@@ -24,6 +23,7 @@ const Main = () => {
   const [posSize, setPosSize] = useState<string>('');
   const [entryCommission, setEntryCommission] = useState<string>('');
   const [exitCommission, setExitCommission] = useState<string>('');
+  const [totalCommission, setTotalCommission] = useState<string>('');
   const [pL, setPL] = useState<string>('');
 
   function calcDataHandler() {
@@ -34,11 +34,13 @@ const Main = () => {
     const profitLevel = +stopLossDistance * +ratio + +entry;
     const entryCommission = (+commission / 100) * (+entry * posSize);
     const exitCommission = (+commission / 100) * (+profitLevel * posSize);
+    const totalCommission = +entryCommission + +exitCommission;
     const expectedPL = +risk * +ratio - +entryCommission - +exitCommission;
 
     setPosSize(String(posSize.toFixed(4)));
     setEntryCommission(String(entryCommission.toFixed(2)));
     setExitCommission(String(exitCommission.toFixed(2)));
+    setTotalCommission(String(totalCommission.toFixed(2)));
     setPL(String(expectedPL.toFixed(2)));
     setProfitLevel(String(profitLevel.toFixed(0)));
   }
@@ -46,10 +48,11 @@ const Main = () => {
   function resetDataHandler() {
     setEntry('');
     setStop('');
-    setRatio('');
+    setRatio('2');
     setPosSize('');
     setEntryCommission('');
     setExitCommission('');
+    setTotalCommission('');
     setPL('');
     setProfitLevel('');
     setRisk('10');
@@ -57,10 +60,12 @@ const Main = () => {
   }
 
   return (
-    <ScrollView bg="white">
+    <ScrollView bg="$secondary950">
       <Center px={'$9'} pt={'$12'}>
         <VStack gap={'$6'} w={'$full'} py={'$6'}>
-          <Heading>Position Size Calculator</Heading>
+          <Heading size="xl" color="$secondary200">
+            Position Size Calculator
+          </Heading>
           {!posSize && (
             <>
               <HStack gap={'$3'}>
@@ -98,34 +103,23 @@ const Main = () => {
               />
             </>
           )}
-          <Button
-            onPress={posSize ? resetDataHandler : calcDataHandler}
-            $active-opacity={0.9}
-            borderRadius={'$lg'}
-            bg="$info700"
-            size="lg"
-            variant="solid"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}>
-            <ButtonText>{posSize ? 'Reset' : 'Calculate'}</ButtonText>
-          </Button>
-          <Divider />
           <VStack gap={'$3'} w={'$full'}>
             {posSize && (
               <>
                 <InfoItem
                   title="Position size:"
                   value={posSize}
-                  color="$trueGray600"
+                  color="$secondary300"
                 />
-                <InfoItem title="Entry:" value={entry} color="$trueGray600" />
+                <Divider bg="$secondary950" my={'$3'} />
+                <InfoItem title="Entry:" value={entry} color="$secondary300" />
                 <InfoItem
                   title="T/P:"
                   value={profitLevel}
-                  color="$trueGray600"
+                  color="$success300"
                 />
-                <InfoItem title="S/L:" value={stop} color="$trueGray600" />
+                <InfoItem title="S/L:" value={stop} color="$red400" />
+                <Divider bg="$secondary950" my={'$3'} />
                 <InfoItem
                   title="Entry commission:"
                   value={`-$${entryCommission}`}
@@ -137,12 +131,31 @@ const Main = () => {
                   color="$red400"
                 />
                 <InfoItem
+                  title="Total commissions:"
+                  value={`-$${totalCommission}`}
+                  color="$red400"
+                />
+                <InfoItem
                   title="Expected P&L:"
                   value={`+$${pL}`}
                   color="$success300"
                 />
+                <Divider bg="$secondary950" my={'$3'} />
               </>
             )}
+            <Button
+              mt={'$6'}
+              onPress={posSize ? resetDataHandler : calcDataHandler}
+              borderRadius={'$lg'}
+              $active-opacity={0.9}
+              bg="$primary600"
+              size="lg"
+              variant="solid"
+              action="primary"
+              isDisabled={false}
+              isFocusVisible={false}>
+              <ButtonText>{posSize ? 'Reset' : 'Calculate'}</ButtonText>
+            </Button>
           </VStack>
         </VStack>
       </Center>

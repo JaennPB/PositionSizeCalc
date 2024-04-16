@@ -11,16 +11,16 @@ const InfoItem = ({title, value, color}: Props) => {
   return (
     <HStack
       alignItems="center"
-      borderColor="$trueGray300"
+      borderColor="$secondary500"
       borderWidth={1}
       py={'$3'}
-      px={'$4'}
+      px={'$3'}
       borderRadius={'$lg'}
       justifyContent="space-between">
-      <Text fontSize={'$md'} fontWeight="$medium">
+      <Text fontSize={'$md'} fontWeight="$medium" color="$secondary300">
         {title}
       </Text>
-      <Text fontSize={'$lg'} fontWeight="$medium" color={color}>
+      <Text fontSize={'$xl'} fontWeight="$medium" color={color}>
         {value}
       </Text>
     </HStack>

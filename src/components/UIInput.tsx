@@ -14,13 +14,16 @@ const UIInput = ({title, onChangeText, value, showInfo, infoData}: Props) => {
   return (
     <Input
       flex={1}
+      borderColor="$secondary500"
       borderRadius={'$lg'}
       variant="outline"
-      size="lg"
+      size="xl"
       isDisabled={false}
       isInvalid={false}
       isReadOnly={false}>
       <InputField
+        placeholderTextColor="$secondary500"
+        color="$secondary300"
         onChangeText={onChangeText}
         value={value}
         placeholder={title}
@@ -29,7 +32,9 @@ const UIInput = ({title, onChangeText, value, showInfo, infoData}: Props) => {
       />
       {showInfo && (
         <InputSlot>
-          <Text pr={'$3'}>{infoData}</Text>
+          <Text pr={'$3'} color="$secondary500">
+            {infoData}
+          </Text>
         </InputSlot>
       )}
     </Input>
