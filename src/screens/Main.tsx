@@ -4,7 +4,6 @@ import {
   Button,
   ButtonText,
   Center,
-  Divider,
   HStack,
   Heading,
   ScrollView,
@@ -14,13 +13,12 @@ import UIInput from '../components/UIInput';
 import InfoItem from '../components/InfoItem';
 
 const Main = () => {
-  const [entry, setEntry] = useState<string>('120');
-  const [stop, setStop] = useState<string>('90');
+  const [entry, setEntry] = useState<string>('');
+  const [stop, setStop] = useState<string>('');
   const [ratio, setRatio] = useState<string>('2');
   const [risk, setRisk] = useState<string>('10');
   const [commission, setCommission] = useState<string>('0.0550');
   const [profitLevel, setProfitLevel] = useState<string>('');
-
   const [posSize, setPosSize] = useState<string>('');
   const [entryCommission, setEntryCommission] = useState<string>('');
   const [exitCommission, setExitCommission] = useState<string>('');
