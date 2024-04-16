@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Box,
   Button,
   ButtonText,
   Center,
@@ -13,8 +14,8 @@ import UIInput from '../components/UIInput';
 import InfoItem from '../components/InfoItem';
 
 const Main = () => {
-  const [entry, setEntry] = useState<string>('');
-  const [stop, setStop] = useState<string>('');
+  const [entry, setEntry] = useState<string>('120');
+  const [stop, setStop] = useState<string>('90');
   const [ratio, setRatio] = useState<string>('2');
   const [risk, setRisk] = useState<string>('10');
   const [commission, setCommission] = useState<string>('0.0550');
@@ -48,13 +49,13 @@ const Main = () => {
   function resetDataHandler() {
     setEntry('');
     setStop('');
-    setRatio('2');
     setPosSize('');
     setEntryCommission('');
     setExitCommission('');
     setTotalCommission('');
     setPL('');
     setProfitLevel('');
+    setRatio('2');
     setRisk('10');
     setCommission('0.0550');
   }
@@ -63,7 +64,7 @@ const Main = () => {
     <ScrollView bg="$secondary950">
       <Center px={'$9'} pt={'$12'}>
         <VStack gap={'$6'} w={'$full'} py={'$6'}>
-          <Heading size="xl" color="$secondary200">
+          <Heading size="xl" color="$secondary100">
             Position Size Calculator
           </Heading>
           {!posSize && (
@@ -80,6 +81,7 @@ const Main = () => {
                   value={stop}
                 />
               </HStack>
+              <Box h={1} />
               <UIInput
                 title="Risk/reward"
                 onChangeText={setRatio}
@@ -101,62 +103,56 @@ const Main = () => {
                 showInfo
                 infoData="Commission %"
               />
+              <Box h={1} />
             </>
           )}
-          <VStack gap={'$3'} w={'$full'}>
-            {posSize && (
-              <>
-                <InfoItem
-                  title="Position size:"
-                  value={posSize}
-                  color="$secondary300"
-                />
-                <Divider bg="$secondary950" my={'$3'} />
-                <InfoItem title="Entry:" value={entry} color="$secondary300" />
-                <InfoItem
-                  title="T/P:"
-                  value={profitLevel}
-                  color="$success300"
-                />
-                <InfoItem title="S/L:" value={stop} color="$red400" />
-                <Divider bg="$secondary950" my={'$3'} />
-                <InfoItem
-                  title="Entry commission:"
-                  value={`-$${entryCommission}`}
-                  color="$red400"
-                />
-                <InfoItem
-                  title="Exit commission:"
-                  value={`-$${exitCommission}`}
-                  color="$red400"
-                />
-                <InfoItem
-                  title="Total commissions:"
-                  value={`-$${totalCommission}`}
-                  color="$red400"
-                />
-                <InfoItem
-                  title="Expected P&L:"
-                  value={`+$${pL}`}
-                  color="$success300"
-                />
-                <Divider bg="$secondary950" my={'$3'} />
-              </>
-            )}
-            <Button
-              mt={'$6'}
-              onPress={posSize ? resetDataHandler : calcDataHandler}
-              borderRadius={'$lg'}
-              $active-opacity={0.9}
-              bg="$primary600"
-              size="lg"
-              variant="solid"
-              action="primary"
-              isDisabled={false}
-              isFocusVisible={false}>
-              <ButtonText>{posSize ? 'Reset' : 'Calculate'}</ButtonText>
-            </Button>
-          </VStack>
+          {posSize && (
+            <>
+              <InfoItem
+                title="Position size:"
+                value={posSize}
+                color="$secondary300"
+              />
+              <Box h={1} />
+              <InfoItem title="Entry:" value={entry} color="$secondary300" />
+              <InfoItem title="T/P:" value={profitLevel} color="$success300" />
+              <InfoItem title="S/L:" value={stop} color="$red400" />
+              <Box h={1} />
+              <InfoItem
+                title="Entry commission:"
+                value={`-$${entryCommission}`}
+                color="$red400"
+              />
+              <InfoItem
+                title="Exit commission:"
+                value={`-$${exitCommission}`}
+                color="$red400"
+              />
+              <InfoItem
+                title="Total commissions:"
+                value={`-$${totalCommission}`}
+                color="$red400"
+              />
+              <InfoItem
+                title="Expected P&L:"
+                value={`+$${pL}`}
+                color="$success300"
+              />
+              <Box h={1} />
+            </>
+          )}
+          <Button
+            onPress={posSize ? resetDataHandler : calcDataHandler}
+            borderRadius={'$lg'}
+            $active-opacity={0.9}
+            bg="$primary600"
+            size="lg"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}>
+            <ButtonText>{posSize ? 'Reset' : 'Calculate'}</ButtonText>
+          </Button>
         </VStack>
       </Center>
     </ScrollView>

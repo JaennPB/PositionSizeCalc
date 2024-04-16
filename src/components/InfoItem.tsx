@@ -11,7 +11,7 @@ const InfoItem = ({title, value, color}: Props) => {
   return (
     <HStack
       alignItems="center"
-      borderColor="$secondary500"
+      borderColor="$secondary400"
       borderWidth={1}
       py={'$3'}
       px={'$3'}
