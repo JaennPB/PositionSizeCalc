@@ -13,8 +13,8 @@ import UIInput from '../components/UIInput';
 import InfoItem from '../components/InfoItem';
 
 const Main = () => {
-  const [entry, setEntry] = useState<string>('190');
-  const [stop, setStop] = useState<string>('90');
+  const [entry, setEntry] = useState<string>('');
+  const [stop, setStop] = useState<string>('');
   const [ratio, setRatio] = useState<string>('2');
   const [risk, setRisk] = useState<string>('10');
   const [commission, setCommission] = useState<string>('0.0550');
