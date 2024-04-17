@@ -13,17 +13,16 @@ import UIInput from '../components/UIInput';
 import InfoItem from '../components/InfoItem';
 
 const Main = () => {
-  const [entry, setEntry] = useState<string>('');
-  const [stop, setStop] = useState<string>('');
+  const [entry, setEntry] = useState<string>('190');
+  const [stop, setStop] = useState<string>('90');
   const [ratio, setRatio] = useState<string>('2');
   const [risk, setRisk] = useState<string>('10');
   const [commission, setCommission] = useState<string>('0.0550');
   const [profitLevel, setProfitLevel] = useState<string>('');
   const [posSize, setPosSize] = useState<string>('');
-  const [entryCommission, setEntryCommission] = useState<string>('');
-  const [exitCommission, setExitCommission] = useState<string>('');
   const [totalCommission, setTotalCommission] = useState<string>('');
-  const [pL, setPL] = useState<string>('');
+  const [grossPL, setGrossPL] = useState<string>('');
+  const [netPL, setNetPL] = useState<string>('');
 
   function calcDataHandler() {
     if (!entry || !stop || !ratio || !risk || !commission) return;
@@ -34,13 +33,13 @@ const Main = () => {
     const entryCommission = (+commission / 100) * (+entry * posSize);
     const exitCommission = (+commission / 100) * (+profitLevel * posSize);
     const totalCommission = +entryCommission + +exitCommission;
-    const expectedPL = +risk * +ratio - +entryCommission - +exitCommission;
+    const grossPL = +risk * +ratio;
+    const netPL = +risk * +ratio - +entryCommission - +exitCommission;
 
     setPosSize(String(posSize.toFixed(4)));
-    setEntryCommission(String(entryCommission.toFixed(2)));
-    setExitCommission(String(exitCommission.toFixed(2)));
     setTotalCommission(String(totalCommission.toFixed(2)));
-    setPL(String(expectedPL.toFixed(2)));
+    setGrossPL(String(grossPL.toFixed(2)));
+    setNetPL(String(netPL.toFixed(2)));
     setProfitLevel(String(profitLevel.toFixed(0)));
   }
 
@@ -48,10 +47,9 @@ const Main = () => {
     setEntry('');
     setStop('');
     setPosSize('');
-    setEntryCommission('');
-    setExitCommission('');
     setTotalCommission('');
-    setPL('');
+    setNetPL('');
+    setGrossPL('');
     setProfitLevel('');
     setRatio('2');
     setRisk('10');
@@ -112,19 +110,14 @@ const Main = () => {
                 color="$secondary300"
               />
               <Box h={1} />
-              <InfoItem title="Entry:" value={entry} color="$secondary300" />
               <InfoItem title="T/P:" value={profitLevel} color="$success300" />
+              <InfoItem title="Entry:" value={entry} color="$secondary300" />
               <InfoItem title="S/L:" value={stop} color="$red400" />
               <Box h={1} />
               <InfoItem
-                title="Entry commission:"
-                value={`-$${entryCommission}`}
-                color="$red400"
-              />
-              <InfoItem
-                title="Exit commission:"
-                value={`-$${exitCommission}`}
-                color="$red400"
+                title="Gross P&L:"
+                value={`$${grossPL}`}
+                color="$secondary300"
               />
               <InfoItem
                 title="Total commissions:"
@@ -132,8 +125,8 @@ const Main = () => {
                 color="$red400"
               />
               <InfoItem
-                title="Expected P&L:"
-                value={`+$${pL}`}
+                title="Net P&L:"
+                value={`+$${netPL}`}
                 color="$success300"
               />
               <Box h={1} />
