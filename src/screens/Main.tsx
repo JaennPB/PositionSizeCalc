@@ -13,46 +13,66 @@ import UIInput from '../components/UIInput';
 import InfoItem from '../components/InfoItem';
 
 const Main = () => {
-  const [entry, setEntry] = useState<string>('');
-  const [stop, setStop] = useState<string>('');
+  const [entry, setEntry] = useState<string>('162.07');
+  const [stop, setStop] = useState<string>('161.58');
+
+  const [accountSize, setAccountSize] = useState<string>('1000');
+  const [risk, setRisk] = useState<string>('1');
   const [ratio, setRatio] = useState<string>('2');
-  const [risk, setRisk] = useState<string>('10');
   const [commission, setCommission] = useState<string>('0.0550');
-  const [profitLevel, setProfitLevel] = useState<string>('');
+
   const [posSize, setPosSize] = useState<string>('');
-  const [totalCommission, setTotalCommission] = useState<string>('');
-  const [grossPL, setGrossPL] = useState<string>('');
-  const [netPL, setNetPL] = useState<string>('');
+  const [totalCommissionTP, setTotalCommissionTP] = useState<string>('');
+  const [totalCommissionSL, setTotalCommissionSL] = useState<string>('');
+  const [profitPL, setProfitPL] = useState<string>('');
+  const [lossPL, setLossPL] = useState<string>('');
+  const [tp2x, setTp2x] = useState<string>('');
 
   function calcDataHandler() {
     if (!entry || !stop || !ratio || !risk || !commission) return;
 
+    //! initial calculations (risk, positions size, tp2x)
+    const initialRiskPerTrade = +accountSize * (+risk / 100);
     const stopLossDistance = +entry - +stop;
-    const posSize = +risk / Math.abs(stopLossDistance);
-    const profitLevel = +stopLossDistance * +ratio + +entry;
-    const entryCommission = (+commission / 100) * (+entry * posSize);
-    const exitCommission = (+commission / 100) * (+profitLevel * posSize);
-    const totalCommission = +entryCommission + +exitCommission;
-    const grossPL = +risk * +ratio;
-    const netPL = +risk * +ratio - +entryCommission - +exitCommission;
+    const initialPosSize = +initialRiskPerTrade / Math.abs(stopLossDistance);
+    const tp2x = stopLossDistance * +ratio + +entry;
 
-    setPosSize(String(posSize.toFixed(4)));
-    setTotalCommission(String(totalCommission.toFixed(2)));
-    setGrossPL(String(grossPL.toFixed(2)));
-    setNetPL(String(netPL.toFixed(2)));
-    setProfitLevel(String(profitLevel.toFixed(0)));
+    //! commissions (entry and exit (sl and tp))
+    const entryCommission = (+commission / 100) * +entry * initialPosSize;
+    const exitCommissionTP = (+commission / 100) * tp2x * initialPosSize;
+    const exitCommissionSL = (+commission / 100) * +stop * initialPosSize;
+    const totalCommissionsTP = entryCommission + exitCommissionTP;
+    const totalCommissionsSL = entryCommission + exitCommissionSL;
+
+    //! adjusted position size
+    const finalRiskPerTrade = initialRiskPerTrade - totalCommissionsSL;
+    const finalPositionSize = finalRiskPerTrade / Math.abs(stopLossDistance);
+
+    //! P&Ls tp and sl
+    const grossProfitPL = +initialRiskPerTrade * +ratio;
+    const profitPL = grossProfitPL - exitCommissionTP;
+    const grossLossPL = +finalRiskPerTrade;
+    const lossPL = grossLossPL + exitCommissionSL;
+
+    setTp2x(String(tp2x.toFixed(2)));
+    setProfitPL(String(profitPL.toFixed(2)));
+    setLossPL(String(lossPL.toFixed(2)));
+    setPosSize(String(finalPositionSize.toFixed(2)));
+    setTotalCommissionTP(totalCommissionsTP.toFixed(2));
+    setTotalCommissionSL(totalCommissionsSL.toFixed(2));
   }
 
   function resetDataHandler() {
+    setTp2x('');
+    setProfitPL('');
     setEntry('');
     setStop('');
     setPosSize('');
-    setTotalCommission('');
-    setNetPL('');
-    setGrossPL('');
-    setProfitLevel('');
+    setTotalCommissionTP('');
+    setTotalCommissionSL('');
+    setAccountSize('1000');
     setRatio('2');
-    setRisk('10');
+    setRisk('1');
     setCommission('0.0550');
   }
 
@@ -79,18 +99,25 @@ const Main = () => {
               </HStack>
               <Box h={1} />
               <UIInput
+                title="Account size"
+                onChangeText={setAccountSize}
+                value={accountSize}
+                showInfo
+                infoData="Account size"
+              />
+              <UIInput
+                title="Risk %"
+                onChangeText={setRisk}
+                value={risk}
+                showInfo
+                infoData="Risk %"
+              />
+              <UIInput
                 title="Risk/reward"
                 onChangeText={setRatio}
                 value={ratio}
                 showInfo
                 infoData="RR Ratio"
-              />
-              <UIInput
-                title="Risk (USD)"
-                onChangeText={setRisk}
-                value={risk}
-                showInfo
-                infoData="Risk in USD"
               />
               <UIInput
                 title="Commissions %"
@@ -110,24 +137,29 @@ const Main = () => {
                 color="$secondary300"
               />
               <Box h={1} />
-              <InfoItem title="T/P:" value={profitLevel} color="$success300" />
+              <InfoItem title="T/P 2x:" value={tp2x} color="$success300" />
               <InfoItem title="Entry:" value={entry} color="$secondary300" />
               <InfoItem title="S/L:" value={stop} color="$red400" />
               <Box h={1} />
               <InfoItem
-                title="Gross P&L:"
-                value={`$${grossPL}`}
-                color="$secondary300"
+                title="T/P commissions:"
+                value={`-$${totalCommissionTP}`}
+                color="$success300"
               />
               <InfoItem
-                title="Total commissions:"
-                value={`-$${totalCommission}`}
+                title="T/P P&L:"
+                value={`+$${profitPL}`}
+                color="$success300"
+              />
+              <InfoItem
+                title="S/L commissions:"
+                value={`-$${totalCommissionSL}`}
                 color="$red400"
               />
               <InfoItem
-                title="Net P&L:"
-                value={`+$${netPL}`}
-                color="$success300"
+                title="S/L P&L:"
+                value={`+$${lossPL}`}
+                color="$red400"
               />
               <Box h={1} />
             </>
